@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jardín de Amor | Digitalbox s.w</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: linear-gradient(135deg, #090919 0%, #1a153b 100%); color: #ffffff; min-height: 100vh; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; align-items: center; position: relative; }
+        
+        /* Mensajes arriba */
+        .message-box-top { position: relative; z-index: 20; width: 90%; max-width: 360px; margin-top: 15px; background: rgba(22, 19, 35, 0.88); backdrop-filter: blur(10px); border: 1.5px solid rgba(255, 183, 3, 0.4); border-radius: 16px; padding: 12px 15px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
+        .message-box-top h3 { font-size: 0.72rem; color: #ffb703; margin-bottom: 3px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+        .message-box-top p { font-size: 0.82rem; color: #f3f0ff; font-style: italic; font-weight: 300; line-height: 1.35; }
+
+        /* Contenedor central de animaciones (Flores y Abejas) */
+        .garden-area { position: relative; width: 100%; max-width: 400px; flex-grow: 1; z-index: 10; overflow: hidden; }
+        
+        .flower-item { position: absolute; font-size: 1.8rem; cursor: pointer; animation: fall linear infinite; user-select: none; transition: transform 0.1s; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8)); }
+        .flower-item:active { transform: scale(1.5); }
+        @keyframes fall {
+            0% { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { transform: translateY(320px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Abejas paseando */
+        .bee-item { position: absolute; font-size: 1.4rem; animation: flyBee linear infinite; user-select: none; z-index: 12; filter: drop-shadow(0 0 5px rgba(255,255,255,0.4)); }
+        @keyframes flyBee {
+            0% { transform: translate(-30px, 50px) scaleX(1); opacity: 0; }
+            20% { opacity: 1; }
+            50% { transform: translate(180px, 120px) scaleX(1); }
+            55% { transform: translate(180px, 120px) scaleX(-1); }
+            80% { opacity: 1; }
+            100% { transform: translate(-30px, 200px) scaleX(-1); opacity: 0; }
+        }
+
+        /* Pasto y botón en la parte inferior */
+        .grass-footer { position: relative; z-index: 25; width: 100%; background: linear-gradient(to top, #132e1b 60%, #1e4d2b 90%, transparent); border-top: 3px solid #2d6a4f; padding: 15px 20px 25px; text-align: center; display: flex; flex-direction: column; align-items: center; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); }
+        .grass-footer::before { content: "🌷 🌿 🌻 🌿 🌷 🌻 🌿 🌷 🌻 🌿 🌷"; font-size: 0.9rem; display: block; margin-bottom: 8px; letter-spacing: 2px; }
+
+        .btn-cta { background: linear-gradient(135deg, #25d366, #128c7e); color: white; text-decoration: none; border: none; border-radius: 50px; padding: 12px 24px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 25px rgba(37, 211, 102, 0.6); animation: bounceBtn 2s infinite; border: 1px solid rgba(255,255,255,0.3); margin-bottom: 8px; }
+        .btn-cta i { font-size: 1.1rem; }
+        @keyframes bounceBtn {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        /* Control de música interactivo On/Off */
+        .music-control { margin-top: 4px; font-size: 0.72rem; color: #ffffff; background: rgba(0, 0, 0, 0.45); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(46, 204, 113, 0.5); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s; }
+        .music-control:hover { background: rgba(46, 204, 113, 0.2); }
+        .music-control .status-badge { background: #e74c3c; color: white; padding: 1px 6px; border-radius: 10px; font-size: 0.6rem; font-weight: bold; margin-left: 4px; transition: background 0.2s; }
+        .music-control.playing .status-badge { background: #2ecc71; }
+
+        .brand-tag { font-size: 0.58rem; color: #82e0aa; margin-top: 6px; display: block; letter-spacing: 1.2px; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <!-- Mensajes en la parte superior -->
+    <div class="message-box-top" id="modalCard">
+        <h3 id="flowerTitle">✨ Toca una flor del jardín ✨</h3>
+        <p id="flowerText">Girasoles y tulipanes brillando bajo el sol para ti.</p>
+    </div>
+
+    <!-- Área central del jardín (Flores cayendo y abejitas paseando) -->
+    <div class="garden-area" id="gardenArea"></div>
+
+    <!-- Pasto y Botones Abajo -->
+    <div class="grass-footer">
+        <a href="https://wa.me/50489077315?text=Hola%20Digitalbox%20s.w,%20me%20encantó%20el%20jardín%20interactivo%20con%20música%20y%20quiero%20cotizar%20uno." class="btn-cta" target="_blank">
+            <i class="fa-brands fa-whatsapp"></i> ¡Quiero un detalle así para mi amor!
+        </a>
+        
+        <!-- Botón de Encendido / Apagado de la Canción -->
+        <div class="music-control" id="musicToggleBtn" onclick="toggleMusic()">
+            <i class="fa-solid fa-music" id="musicIcon"></i> 
+            <span>Flores Amarillas:</span> 
+            <span class="status-badge" id="musicStatusText">APAGADA</span>
+        </div>
+
+        <span class="brand-tag">DIGITALBOX S.W • Regalos Digitales Únicos</span>
+    </div>
+
+    <!-- Tu canción local conectada -->
+    <audio id="bgMusic" loop>
+        <source src="cancion1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const symbols = ['🌻', '🌷', '🌼', '💛'];
+        const phrases = [
+            { title: "🌻 Girasol del Alma", text: "“Dicen que regalar flores amarillas ilumina toda la vida... tú iluminas la mía cada instante.”" },
+            { title: "🌷 Tulipán Brillante", text: "“Eres esa coincidencia más hermosa que llegó a florecer en mi jardín y en mi corazón.”" },
+            { title: "💛 Destino Dorado", text: "“No hay distancia ni tiempo que apague el brillo de este amor tan sincero que siento por ti.”" },
+            { title: "🌼 Promesa de Primavera", text: "“Quiero verte sonreír hoy, mañana y en cada primavera de nuestras vidas juntos.”" },
+            { title: "✨ Luz de Mis Ojos", text: "“Si el universo me diera a elegir otra vida, en todas ellas te volvería a buscar.”" }
+        ];
+
+        const gardenArea = document.getElementById('gardenArea');
+
+        function createFlower() {
+            const flower = document.createElement('div');
+            flower.classList.add('flower-item');
+            flower.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+            flower.style.left = Math.random() * 85 + '%';
+            flower.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            
+            flower.addEventListener('click', () => {
+                const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+                document.getElementById('flowerTitle').innerText = randomPhrase.title;
+                document.getElementById('flowerText').innerText = randomPhrase.text;
+                flower.style.transform = 'scale(1.6)';
+                flower.style.opacity = '0';
+                setTimeout(() => flower.remove(), 200);
+            });
+
+            gardenArea.appendChild(flower);
+            setTimeout(() => { flower.remove(); }, 6000);
+        }
+
+        function createBee() {
+            const bee = document.createElement('div');
+            bee.classList.add('bee-item');
+            bee.innerText = '🐝';
+            bee.style.top = (Math.random() * 150 + 20) + 'px';
+            bee.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            gardenArea.appendChild(bee);
+            setTimeout(() => { bee.remove(); }, 8000);
+        }
+
+        setInterval(createFlower, 600);
+        setInterval(createBee, 2500);
+
+        // Control de música (Encendido / Apagado)
+        const music = document.getElementById('bgMusic');
+        const musicToggleBtn = document.getElementById('musicToggleBtn');
+        const musicStatusText = document.getElementById('musicStatusText');
+        const musicIcon = document.getElementById('musicIcon');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (!isPlaying) {
+                music.play().then(() => {
+                    isPlaying = true;
+                    musicToggleBtn.classList.add('playing');
+                    musicStatusText.innerText = "ENCENDIDA";
+                    musicIcon.className = "fa-solid fa-volume-high";
+                }).catch(e => console.log("Audio play blocked", e));
+            } else {
+                music.pause();
+                isPlaying = false;
+                musicToggleBtn.classList.remove('playing');
+                musicStatusText.innerText = "APAGADA";
+                musicIcon.className = "fa-solid fa-music";
+            }
+        }
+    </script>
+</body>
+</html>
